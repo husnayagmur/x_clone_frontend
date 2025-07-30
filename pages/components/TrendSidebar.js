@@ -12,7 +12,7 @@ const trends = [
 
 const TrendSidebar = () => {
   return (
-    <aside className="hidden lg:block fixed top-0 right-0 h-screen w-[350px] px-4 py-6 overflow-y-auto bg-black text-white">
+    <aside className="hidden lg:block fixed top-0 right-0 h-screen w-[350px] px-4 py-6  bg-black text-white">
       
       {/* Arama */}
       <div className="mb-4">

@@ -23,16 +23,17 @@ const Profile = () => {
         />
       </div>
       {/* Profil Fotoğrafı + Düzenle */}
-      <div className="relative px-4 pb-4 border-b border-gray-800">
-        <div className="absolute -top-12 left-4 border-4 border-black rounded-full w-32 h-32">
-          <Image
-            src="/profile.jpg"
-            alt="Profil"
-            width={128}
-            height={128}
-            className="object-cover"
-          />
-        </div>
+      <div className="relative px-4 pb-4">
+       <div className="absolute -top-12 left-4 border-4 border-black rounded-full w-32 h-32 overflow-hidden">
+  <Image
+    src="/profile.jpg"
+    alt="Profil"
+    width={128}
+    height={128}
+    className="object-cover w-full h-full rounded-full"
+  />
+</div>
+
         <div className="flex justify-end pt-4">
           <button className="border border-gray-600 rounded-full px-4 py-1 text-sm hover:bg-[#181818]">
             Profili düzenle
@@ -91,7 +92,7 @@ const Profile = () => {
           username="husnaygmr"
           date="4 Ağu 2024"
           text={`"hasjkgafhjdsgfhjdsghjdgfjh"`}
-          hashtag="#eceüner"
+          hashtag="#aaa"
           likes={0}
           views={195}
           avatar="/profile.jpg"

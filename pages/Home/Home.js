@@ -61,10 +61,10 @@ const Home = () => {
           Gönderi yayınla
         </button>
       </div>
-      <div className="px-4 py-3 mt-4 text-blue-500 text-sm hover:underline cursor-pointer border bordery-gray-800 flex justify-center items-center">
+      <div className="px-4 py-3 mt-4 text-blue-500 text-sm hover:underline cursor-pointer border border-gray-800 flex justify-center items-center">
         35 gönderiyi göster
       </div>
-       <div className="mt-6 border-t border-gray-800">
+       <div className=" border-t border-gray-800">
               <TweetCard
                 name="HüSna"
                 username="husnaygmr"

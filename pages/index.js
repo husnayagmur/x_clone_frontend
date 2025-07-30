@@ -4,9 +4,17 @@ import Sidebar from "./components/Sidebar";
 import TrendSidebar from "./components/TrendSidebar";
 import Home from "./Home/Home";
 import Profile from "./Profile/Profile";
+import { Login } from "./Auth/Login";
 
 export default function IndexPage() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false); // başlangıçta giriş yapılmamış
   const [currentView, setCurrentView] = useState("home");
+
+  // Login componentine login sonrası setIsLoggedIn(true) gönder
+  if (!isLoggedIn) {
+    return <Login onLogin={() => setIsLoggedIn(true)} />;
+  }
+
   const Content = currentView === "profile" ? Profile : Home;
 
   return (
@@ -27,3 +35,4 @@ export default function IndexPage() {
     </div>
   );
 }
+
