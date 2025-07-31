@@ -1,17 +1,12 @@
-'use client';
+// components/TweetCardHome.tsx
 import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { FaRegComment, FaRetweet, FaHeart } from 'react-icons/fa';
-import {
-  toggleLike,
-  toggleRetweet,
-  fetchLikeCount,
-  fetchRetweetInfo,
-} from '@/redux/slice/TweetSlice';
-import ReplyModal from './ReplyModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleLike, toggleRetweet, fetchLikeCount, fetchRetweetInfo } from '@/redux/slice/TweetSlice';
 import Image from 'next/image';
+import ReplyModal from './ReplyModal';
 
-const TweetCard = ({
+const TweetCardHome = ({
   tweetId,
   name,
   username,
@@ -35,27 +30,21 @@ const TweetCard = ({
   const [isLiked, setIsLiked] = useState(false);
   const [isRetweeted, setIsRetweeted] = useState(false);
 
-  // Kullanıcı oturum açtıysa, beğenilen ve retweetlenen tweet'lerin durumunu doğru şekilde güncelle
   useEffect(() => {
     if (user?._id) {
-      // User'ın beğendiği tweet'leri kontrol et
       setIsLiked(likes.includes(user._id));
-      // User'ın retweet yaptığı tweet'leri kontrol et
       setIsRetweeted(retweets.includes(user._id));
     }
-    // Veritabanındaki beğeni ve retweet sayısını al
     dispatch(fetchLikeCount(tweetId));
     dispatch(fetchRetweetInfo(tweetId));
   }, [user, tweetId, dispatch, likes, retweets]);
 
-  // Like işlemi
   const handleLike = () => {
     if (!token) return;
     setIsLiked((prev) => !prev);
     dispatch(toggleLike({ tweetId, token }));
   };
 
-  // Retweet işlemi
   const handleRetweet = () => {
     if (!token) return;
     setIsRetweeted((prev) => !prev);
@@ -68,9 +57,8 @@ const TweetCard = ({
         <div className="flex gap-3">
           {/* Avatar */}
           <div className="relative w-10 h-10 overflow-hidden rounded-full shrink-0">
-            {/* Dinamik avatar resmini burada kullanıyoruz */}
             <Image
-              src={avatar ? `/uploads/profile/${avatar}` : './profile.jpg'}
+              src={avatar ? `/uploads/profile/${avatar}` : '/profile.jpg'}
               alt={name}
               className="object-cover w-full h-full"
               width={120}
@@ -134,4 +122,4 @@ const TweetCard = ({
   );
 };
 
-export default TweetCard;
+export default TweetCardHome;

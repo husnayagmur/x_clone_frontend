@@ -4,20 +4,23 @@ import axios from 'axios';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-// ✅ Yeni yorum ekle
 export const addComment = createAsyncThunk(
   'comments/add',
   async ({ tweetId, content, token }, thunkAPI) => {
+    console.log("📤 API İsteği:", { tweetId, content });
     try {
       const res = await axios.post(`${BASE_URL}/comments/${tweetId}`, { content }, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log("✅ API cevabı:", res.data);
       return res.data.comment;
     } catch (err) {
+      console.error("❌ API hatası:", err.response?.data || err.message);
       return thunkAPI.rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
+
 
 // ✅ Tüm yorumları getir
 export const fetchAllComments = createAsyncThunk(

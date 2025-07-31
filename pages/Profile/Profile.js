@@ -1,9 +1,9 @@
 'use client';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { FaCalendarAlt, FaArrowLeft } from 'react-icons/fa';
 import TweetCard from '../components/TweetCard';
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
 import { fetchUserProfile } from '@/redux/slice/UserSlice';
 
 const Profile = () => {
@@ -11,6 +11,7 @@ const Profile = () => {
   const { user } = useSelector((state) => state.auth); 
   const {
     profile,
+    tweets,
     tweetCount,
     followerCount,
     followingCount,
@@ -40,13 +41,24 @@ const Profile = () => {
       </div>
 
       <div className="relative w-full h-52 bg-gray-800">
-        <Image src="/profile.jpg" alt="Kapak" fill className="object-cover" />
+        {/* Kapak fotoğrafını dinamikleştiriyoruz */}
+     <Image
+  src="/profile.jpg" // Dinamik avatar kontrolü
+  alt="Profil"
+  width={128}
+  height={128}
+  className="object-cover w-full h-full rounded-full"
+/>
+
+
+
       </div>
 
       <div className="relative px-4 pb-4">
         <div className="absolute -top-12 left-4 border-4 border-black rounded-full w-32 h-32 overflow-hidden">
+          {/* Profil fotoğrafını dinamikleştiriyoruz */}
           <Image
-            src={profile?.avatar || "/profile.jpg"}
+            src="/profile.jpg" // Varsayılan avatar resmi
             alt="Profil"
             width={128}
             height={128}
@@ -98,15 +110,33 @@ const Profile = () => {
       </div>
 
       <div className="mt-6 border-t border-gray-800">
-        <TweetCard
-          name={profile?.username}
-          username={profile?.email?.split('@')[0]}
-          date="7 Ağu 2024"
-          text="jhkdgfhjdghjgdhjg"
-          likes={2}
-          views={183}
-          avatar={profile?.avatar || "/profile.jpg"}
-        />
+        {tweets?.length > 0 ? (
+          tweets.map((tweet) => {
+            const tweetDate = new Date(tweet.createdAt).toLocaleDateString('tr-TR', {
+              day: 'numeric',
+              month: 'short',
+              year: 'numeric',
+            });
+
+            return (
+              <TweetCard
+                key={tweet._id}
+                tweetId={tweet._id}
+                name={profile?.username}
+                username={profile?.email?.split('@')[0]}
+                date={tweetDate}
+                text={tweet.content}
+                likes={tweet.likes}
+                retweets={tweet.retweets}
+                views={183}
+                avatar={profile?.avatar || '/profile.jpg'}
+                commentCount={tweet.commentCount || 0}
+              />
+            );
+          })
+        ) : (
+          <p className="text-gray-500 text-center py-6">Henüz hiç tweet atılmamış.</p>
+        )}
       </div>
     </div>
   );

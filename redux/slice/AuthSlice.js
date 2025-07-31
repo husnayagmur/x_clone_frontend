@@ -1,4 +1,3 @@
-// redux/slice/AuthSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
@@ -23,8 +22,8 @@ export const loginUser = createAsyncThunk(
   async (formData, thunkAPI) => {
     try {
       const res = await axios.post(`${BASE_URL}/login`, formData);
-      localStorage.setItem('token', res.data.token);
-      return res.data.user;
+      localStorage.setItem('token', res.data.token);  // Token'ı localStorage'a kaydediyoruz
+      return res.data;  // Kullanıcı verilerini geri döndürüyoruz
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response?.data?.message || 'Giriş başarısız');
     }
@@ -80,23 +79,31 @@ export const changePassword = createAsyncThunk(
 
 const initialState = {
   user: null,
+  token: null,
   loading: false,
   error: null,
   message: null,
 };
 
+// Token'ı client-side'da almak için useEffect ile çağırma yapılacak
 const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
     logoutUser: (state) => {
-      localStorage.removeItem('token');
+      if (typeof window !== 'undefined') { // client-side'da olduğumuzu kontrol edelim
+        localStorage.removeItem('token');  // Token'ı localStorage'dan siliyoruz
+      }
       state.user = null;
+      state.token = null;  // Token'ı Redux'tan da siliyoruz
     },
     clearMessages: (state) => {
       state.message = null;
       state.error = null;
     },
+    setToken: (state, action) => {
+      state.token = action.payload; // Token'ı Redux'a kaydediyoruz
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -122,7 +129,11 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.user = action.payload.user;
+        state.token = action.payload.token;  // Token'ı burada Redux'a kaydediyoruz
+        if (typeof window !== 'undefined') { // client-side kontrolü
+          localStorage.setItem('token', action.payload.token);  // Token'ı localStorage'da tutuyoruz
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -155,5 +166,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logoutUser, clearMessages } = authSlice.actions;
+export const { logoutUser, clearMessages, setToken } = authSlice.actions;
 export default authSlice.reducer;

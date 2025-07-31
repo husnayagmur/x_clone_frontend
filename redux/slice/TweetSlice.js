@@ -19,6 +19,23 @@ export const createTweet = createAsyncThunk(
   }
 );
 
+// redux/slice/TweetSlice.js
+
+export const fetchFeedTweets = createAsyncThunk(
+  'tweets/fetchFeedTweets',
+  async (token, thunkAPI) => {
+    try {
+      const res = await axios.get(`${BASE_URL}/tweets/feed`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return res.data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.response?.data?.message || err.message);
+    }
+  }
+);
+
+
 // ✅ 2. Tüm tweetleri getir
 export const fetchAllTweets = createAsyncThunk(
   'tweets/fetchAllTweets',
@@ -106,6 +123,7 @@ const tweetSlice = createSlice({
   initialState: {
     tweets: [],
     userTweets: [],
+     feedTweets: [],  
     likeCounts: {},
     retweetInfo: {},
     loading: false,
@@ -154,6 +172,19 @@ const tweetSlice = createSlice({
         }
       })
 
+      // ✅ Feed tweetlerini getir
+.addCase(fetchFeedTweets.pending, (state) => {
+  state.loading = true;
+})
+.addCase(fetchFeedTweets.fulfilled, (state, action) => {
+  state.loading = false;
+  state.feedTweets = action.payload;
+})
+.addCase(fetchFeedTweets.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+})
+
       // ✅ Retweet işlemi
       .addCase(toggleRetweet.fulfilled, (state, action) => {
         const { tweetId, message } = action.payload;
@@ -181,6 +212,8 @@ const tweetSlice = createSlice({
           users: retweetedUsers,
         };
       });
+
+      
   }
 });
 
