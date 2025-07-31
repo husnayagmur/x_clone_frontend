@@ -4,7 +4,7 @@ import Sidebar from "./components/Sidebar";
 import TrendSidebar from "./components/TrendSidebar";
 import Home from "./Home/Home";
 import Profile from "./Profile/Profile";
-import { Login } from "./Auth/Login";
+import Login from "./Auth/Login";
 
 export default function IndexPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); // başlangıçta giriş yapılmamış

@@ -7,8 +7,11 @@ import {
 import { PiSparkleFill } from 'react-icons/pi';
 import { SiX } from 'react-icons/si';
 import Link from 'next/link';
+import { useSelector } from 'react-redux';
 
 export default function Sidebar({ currentView, setCurrentView }) {
+  const { user } = useSelector((state) => state.auth);
+
   return (
     <aside className="fixed top-0 left-0 h-screen bg-black text-white px-8 py-6 w-16 sm:w-20 lg:w-72 flex flex-col z-50">
       <div className="flex-1 flex flex-col gap-2 items-center lg:items-start">
@@ -49,10 +52,10 @@ export default function Sidebar({ currentView, setCurrentView }) {
         <div className="w-10 h-10 rounded-full bg-gray-800 sm:w-12 sm:h-12"></div>
         <div className="hidden sm:flex flex-col flex-1 ml-3">
           <div className="flex justify-between items-center">
-            <h1 className="font-bold text-white text-sm sm:text-base">HüSna</h1>
+           <h1 className="font-bold text-white text-sm sm:text-base">{user?.username || 'Kullanıcı'}</h1>
             <span className="text-white text-lg">⋯</span>
           </div>
-          <span className="text-gray-400 text-sm">@husnaygmr</span>
+         <span className="text-gray-400 text-xs">{user?.email || 'email@örnek.com'}</span>
         </div>
       </div>
     </aside>
