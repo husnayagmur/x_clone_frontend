@@ -71,12 +71,13 @@ export const updateProfile = createAsyncThunk(
           'Content-Type': 'multipart/form-data',
         },
       });
-      return res.data.user;
+      return res.data.user; // Backend'den dönen güncellenmiş kullanıcıyı döndür
     } catch (err) {
       return thunkAPI.rejectWithValue(err.response?.data?.message || err.message);
     }
   }
 );
+
 
 const profileSlice = createSlice({
   name: 'users',
@@ -130,18 +131,18 @@ const profileSlice = createSlice({
         state.followers = action.payload;
       })
 
-      .addCase(updateProfile.pending, (state) => {
+       .addCase(updateProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(updateProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.profile = action.payload;
-        state.successMessage = 'Profil güncellendi';
+        state.profile = action.payload; 
+        state.successMessage = 'Profil başarıyla güncellendi';
       })
       .addCase(updateProfile.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload.avatar;
       });
   }
 });
