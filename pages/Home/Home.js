@@ -1,30 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchFeedTweets, createTweet, toggleLike, toggleRetweet } from "@/redux/slice/TweetSlice";
-import Image from "next/image";
+import Image from "next/image"; // Image component from Next.js
 import { FaRegComment, FaRetweet, FaHeart, FaEye } from "react-icons/fa";
 import ReplyModal from "../components/ReplyModal"; 
 
+// Format the avatar URL correctly
 const formatAvatarUrl = (avatar) => {
-  if (!avatar || avatar === "undefined") return "/profile.jpg"; 
-  if (avatar.startsWith("http")) return avatar;
+  if (!avatar || avatar === "undefined") return "/profile.jpg"; // Default image if no avatar
+  if (avatar.startsWith("http")) return avatar; // If it's an absolute URL
   const cleanPath = avatar.startsWith("/") ? avatar : "/" + avatar;
-  return `http://localhost:3000${cleanPath}`; 
+  return `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}${cleanPath}`;
 };
 
 const Home = () => {
-  const [text, setText] = useState("");
-  const [showModal, setShowModal] = useState(false); 
-  const [tweetId, setTweetId] = useState(null); 
-  const [likedTweets, setLikedTweets] = useState({}); 
-  const [retweetedTweets, setRetweetedTweets] = useState({}); 
+  const [text, setText] = useState(""); // Tweet input text
+  const [showModal, setShowModal] = useState(false); // To handle reply modal visibility
+  const [tweetId, setTweetId] = useState(null); // To store the selected tweet ID
+  const [likedTweets, setLikedTweets] = useState({}); // To manage the liked state of tweets
+  const [retweetedTweets, setRetweetedTweets] = useState({}); // To manage the retweet state of tweets
+
   const dispatch = useDispatch();
   const { token, user } = useSelector((state) => state.auth);  
-  const userEmail = user?.email; 
+  const userEmail = user?.email;
 
   useEffect(() => {
     if (token) {
-      dispatch(fetchFeedTweets(token));  
+      dispatch(fetchFeedTweets(token)); // Fetch feed tweets when token is available
     }
   }, [dispatch, token]);
 
@@ -37,7 +39,7 @@ const Home = () => {
 
     if (createTweet.fulfilled.match(result)) {
       alert("Tweet başarıyla gönderildi!");
-      setText(""); 
+      setText(""); // Reset the tweet input field after submission
     } else {
       alert("Tweet gönderilirken bir hata oluştu.");
     }
@@ -53,7 +55,6 @@ const Home = () => {
     setTweetId(null); 
   };
 
-
   const handleLike = (tweetId) => {
     setLikedTweets((prev) => ({ 
       ...prev, 
@@ -61,7 +62,6 @@ const Home = () => {
     }));
     dispatch(toggleLike({ tweetId, token }));
   };
-
 
   const handleRetweet = (tweetId) => {
     setRetweetedTweets((prev) => ({ 
@@ -71,8 +71,10 @@ const Home = () => {
     dispatch(toggleRetweet({ tweetId, token }));
   };
 
+  const avatarUrl = user?.avatar ? formatAvatarUrl(user.avatar) : "/profile.jpg"; // Get avatar URL for user profile
+
   return (
-    <div className="text-white bg-black min-h-screen w-full border border-gray-800 ">
+    <div className="text-white bg-black min-h-screen w-full border border-gray-800">
       <div className="flex-1">
         {/* Header */}
         <div className="flex border-b border-gray-800 justify-between text-sm font-semibold px-4 py-3">
@@ -83,7 +85,7 @@ const Home = () => {
         {/* Tweet input */}
         <div className="flex gap-3 px-4 mt-2">
           <Image
-            src={formatAvatarUrl("/profile.jpg")}
+            src={avatarUrl}
             className="w-12 h-12 rounded-full object-cover border-2 border-gray-700"
             alt="profile"
             width={48}
@@ -117,9 +119,18 @@ const Home = () => {
             feedTweets.map((tweet) => (
               <div key={tweet._id} className="py-2 px-4">
                 <div className="flex justify-between items-center">
-                  <div>
-                    <p className="font-semibold text-white">{tweet.author.username}</p>
-                    <p className="text-gray-400 text-xs">{userEmail || "No Email"}</p> 
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={formatAvatarUrl(tweet.author.avatar)} // Using dynamic avatar URL for each tweet
+                      alt="Profil"
+                      width={32}
+                      height={32}
+                      className="object-cover w-8 h-8 rounded-full" // Yuvarlak profil resmi
+                    />
+                    <div>
+                      <p className="font-semibold text-white">{tweet.author.username}</p>
+                      <p className="text-gray-400 text-xs">{userEmail || "No Email"}</p> 
+                    </div>
                   </div>
                 </div>
                 <p className="mt-2">{tweet.content}</p>

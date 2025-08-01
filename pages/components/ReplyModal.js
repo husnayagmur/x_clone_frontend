@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addComment } from '@/redux/slice/CommentSlice';
 import { FaTimes, FaImage, FaChartBar, FaSmile, FaCalendarAlt, FaMapMarkerAlt, FaFileImage } from 'react-icons/fa';
+import Image from 'next/image';
 
 const ReplyModal = ({ onClose, tweetId }) => {
   const [content, setContent] = useState('');
@@ -11,19 +12,27 @@ const ReplyModal = ({ onClose, tweetId }) => {
   // Redux store'dan user ve token'ı alıyoruz
   const { user, token } = useSelector((state) => state.auth);
 
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+  // Avatar URL'ini formatlıyoruz
+  const avatarUrl = user?.avatar?.startsWith('/')
+    ? `${BASE_URL}${user.avatar}`
+    : user?.avatar || '/profile.jpg';
+
+  // Yorum gönderme fonksiyonu
   const handleSubmit = async () => {
     if (!content.trim()) {
-      console.log("❌ Yorum boş olamaz!");
+      console.log('❌ Yorum boş olamaz!');
       return;
     }
 
     const result = await dispatch(addComment({ tweetId, content, token }));
 
     if (addComment.fulfilled.match(result)) {
-      console.log("✅ Yorum başarıyla eklendi:", result.payload);
+      console.log('✅ Yorum başarıyla eklendi:', result.payload);
       onClose(); // modalı kapat
     } else {
-      console.log("❌ Yorum ekleme hatası:", result.payload);
+      console.log('❌ Yorum ekleme hatası:', result.payload);
     }
   };
 
@@ -37,16 +46,18 @@ const ReplyModal = ({ onClose, tweetId }) => {
           </button>
         </div>
 
-        {/* Tweet Bilgisi (opsiyonel olarak geliştirilebilir) */}
         <div className="text-gray-400 text-sm mb-2">Yanıtla</div>
 
-        {/* Yanıt Giriş */}
         <div className="flex gap-3 mt-4">
-          <img
-            src={user?.avatar || '/profile.jpg'}
-            alt="me"
-            className="w-12 h-12 rounded-full object-cover"
+         <div className='w-14 h-14'>
+           <Image
+            src={avatarUrl}
+            alt="Profil"
+            width={48} 
+            height={48}
+            className="object-cover w-full h-full rounded-full"
           />
+         </div>
           <input
             type="text"
             placeholder="Yanıtını yaz..."
@@ -56,7 +67,6 @@ const ReplyModal = ({ onClose, tweetId }) => {
           />
         </div>
 
-        {/* Araçlar */}
         <div className="flex items-center justify-between mt-6">
           <div className="flex gap-4 text-blue-500 text-xl">
             <FaImage className="cursor-pointer" />

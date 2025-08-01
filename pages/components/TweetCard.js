@@ -30,12 +30,18 @@ const TweetCard = ({
   const retweetInfo = useSelector(
     (state) => state.tweets.retweetInfo[tweetId] || { count: retweets.length }
   );
+ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+  // avatar ve coverPhoto URL'lerini oluşturuyoruz
+  const avatarUrl =
+    user?.avatar?.startsWith("/")
+      ? `${BASE_URL}${user.avatar}`
+      : user?.avatar || "/profile.jpg";
 
   const [showModal, setShowModal] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [isRetweeted, setIsRetweeted] = useState(false);
 
-  // Kullanıcı oturum açtıysa, beğenilen ve retweetlenen tweet'lerin durumunu doğru şekilde güncelle
   useEffect(() => {
     if (user?._id) {
       // User'ın beğendiği tweet'leri kontrol et
@@ -67,18 +73,16 @@ const TweetCard = ({
       <div className="p-4 border-b border-gray-800 hover:bg-[#16181c] transition">
         <div className="flex gap-3">
           {/* Avatar */}
-          <div className="relative w-10 h-10 overflow-hidden rounded-full shrink-0">
-            {/* Dinamik avatar resmini burada kullanıyoruz */}
-            <Image
-              src={avatar ? `/uploads/profile/${avatar}` : './profile.jpg'}
-              alt={name}
-              className="object-cover w-full h-full"
-              width={120}
-              height={120}
-            />
-          </div>
+          <div className='w-12 h-12'>
+           <Image
+                    src={avatarUrl} 
+                    alt="Profil"
+                    width={64}
+                    height={64}
+                    className="object-cover w-full h-full rounded-full"
+                  />
+                 </div>
 
-          {/* İçerik */}
           <div className="flex-1 min-w-0">
             <div className="flex justify-between items-center text-sm text-gray-400">
               <span>

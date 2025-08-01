@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateProfile } from '@/redux/slice/UserSlice'; // Import updateProfile action
+import { updateProfile } from '@/redux/slice/UserSlice'; 
 
 const ProfileEditModal = ({ onClose, userId, profile }) => {
   const dispatch = useDispatch();
   const [bio, setBio] = useState(profile?.bio || '');
   const [username, setUsername] = useState(profile?.username || '');
-  const [avatar, setAvatar] = useState(null); // For file upload
+  const [avatar, setAvatar] = useState(null); 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,7 +26,7 @@ const ProfileEditModal = ({ onClose, userId, profile }) => {
     try {
       setLoading(true);
       await dispatch(updateProfile({ userId, formData, token: localStorage.getItem('token') }));
-      onClose(); // Close modal after successful update
+      onClose(); 
     } catch (err) {
       setError('Profil güncellenirken bir hata oluştu.');
     } finally {
@@ -36,7 +36,7 @@ const ProfileEditModal = ({ onClose, userId, profile }) => {
 
   return (
     <div className="fixed inset-0 bg-gray-700/50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-96 text-black"> {/* Added text-black here */}
+      <div className="bg-white p-6 rounded-lg w-96 text-black">
         <h2 className="text-xl font-bold mb-4">Profili Düzenle</h2>
 
         <form onSubmit={handleSubmit}>
